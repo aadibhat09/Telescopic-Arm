@@ -16,7 +16,15 @@ public interface ElevatorIO {
      */
     @AutoLog
     public class ElevatorData {
-        public Translation2d position = ExampleElevatorConfig.ElevatorSpecs.MOUNT_OFFSET;
+        public Translation2d armPosition = ExampleElevatorConfig.ElevatorSpecs.MOUNT_OFFSET;
+        public double velocityMPS = 0;
+        public double accelMPSS = 0;
+        public double leftCurrentAmps = 0;
+        public double rightCurrentAmps = 0;
+        public double leftAppliedVolts = 0;
+        public double rightAppliedVolts = 0;
+
+        public Translation2d elevatorPosition = ExampleElevatorConfig.ElevatorSpecs.MOUNT_OFFSET;
         public double velocityMPS = 0;
         public double accelMPSS = 0;
         public double leftCurrentAmps = 0;
