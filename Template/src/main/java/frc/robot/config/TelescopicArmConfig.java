@@ -24,6 +24,22 @@ public class TelescopicArmConfig {
         public static boolean IS_INVERTED = false;
     }
 
+    public static class ElevatorSpecs {
+        public static final double GEARING = 16 * (24.0 / 22.0);
+        public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(54);
+        // 22 TOOTH, 1/4 in pitch, divide by 2pi to go from circumfrence to radius
+        public static final double DRUM_RADIUS_M = (Units.inchesToMeters(22.0 / 4.0) / (2 * Math.PI));
+
+        public static final Translation2d MOUNT_OFFSET = new Translation2d(0, Units.inchesToMeters(3));
+        public static final double MIN_HEIGHT_M = 0;
+        public static final double MAX_HEIGHT_M = Units.feetToMeters(6);
+        public static final double STARTING_HEIGHT_M = 0;
+
+        public static boolean IS_INVERTED = false;
+
+        public static final boolean SIMULATE_GRAVITY = true;
+    }
+
     public static class ArmControl {
         // cleaner utility class to help make switching between real and sim configs
         // easier
@@ -69,9 +85,9 @@ public class TelescopicArmConfig {
 
         public static ControlConfig CONTROL_CONFIG = (MiscUtils.getRobotType() == RobotType.SIM) ? SIM : REAL;
     }
+
     public static class ElevatorControl {
-        // cleaner utility class to help make switching between real and sim configs
-        // easier
+
         public static class ControlConfig {
             public double kG;
             public double kP;
@@ -114,31 +130,15 @@ public class TelescopicArmConfig {
 
         public static ControlConfig CONTROL_CONFIG = (MiscUtils.getRobotType() == RobotType.SIM) ? SIM : REAL;
     }
-    
-    public enum ArmStates {
-        STOW(Rotation2d.fromDegrees(0)),
-        POSITION_1(Rotation2d.fromDegrees(60)),
-        POSITION_2(Rotation2d.fromDegrees(250)),
-        MAX(ArmSpecs.MAX_ANGLE),
-        STOPPED(Rotation2d.fromDegrees(0));
 
-        public Rotation2d angle;
-
-        private ArmStates(Rotation2d s_angle) {
-            this.angle = s_angle;
-        }
-    }
-
-    public enum ElevatorStates {
-        STOW(Units.inchesToMeters(0)),
-        POSITION_1(Units.feetToMeters(2.5)),
-        POSITION_2(Units.feetToMeters(4)),
-        MAX(Units.feetToMeters(6)),
-        STOPPED(-1);
+    public enum TelescopicArmStates {
+        L1(Units.inchesToMeters(1.0), Units.inchesToMeters(12.0));
+        L2(Units.inchesToMeters(1.0), Units.inchesToMeters(15.35));
+        L3(Units.inchesToMeters(1.0), .742);
 
         public Translation2d position;
 
-        private ElevatorStates(double heightM) {
+        private TelescopicArmStates(double x, double y) {
             this.position = (new Translation2d(0, heightM)).minus(ElevatorSpecs.MOUNT_OFFSET);
         }
     }
