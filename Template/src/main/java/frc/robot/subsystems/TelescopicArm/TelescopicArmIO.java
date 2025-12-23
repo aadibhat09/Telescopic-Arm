@@ -10,22 +10,20 @@ public interface TelescopicArmIO {
     @AutoLog
     public class TelescopicArmData {
 
-        public Rotation2d angle = Rotation2d.fromDegrees(0);
-        public double angularVelocityRadPS = 0.0;
-        public double angularAccelRadPSS = 0.0;
-        public double appliedVolts = 0.0;
-        public double currentAmps = 0.0;
-    }
+        // ARM DATA
+        public double arm_angle = 0;
+        public double arm_angularVelocityRadPS = 0.0;
+        public double arm_angularAccelRadPSS = 0.0;
+        public double arm_appliedVolts = 0.0;
+        public double arm_currentAmps = 0.0;
 
-    @AutoLog
-    public class ElevatorData {
-        public Translation2d position = TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET;
-        public double velocityMPS = 0;
-        public double accelMPSS = 0;
-        public double leftCurrentAmps = 0;
-        public double rightCurrentAmps = 0;
-        public double leftAppliedVolts = 0;
-        public double rightAppliedVolts = 0;
+
+        // ELEVATOR DATA
+        public Translation2d elevator_position = TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET;
+        public double elevator_velocityMPS = 0;
+        public double elevator_accelMPSS = 0;
+        public double elevator_currentAmps = 0;
+        public double elevator_appliedVolts = 0;
     }
 
     public default void setElevatorVoltage(double volts) {

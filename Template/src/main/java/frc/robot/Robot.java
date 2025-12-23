@@ -22,12 +22,14 @@ import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.RobotType;
 import frc.robot.subsystems.ExampleElevator.ExampleElevator;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.TelescopicArm.*;
 import frc.robot.config.ButtonBindings;
 import frc.robot.utils.MiscUtils;
 
 public class Robot extends LoggedRobot {
   public static Swerve swerve = new Swerve();
   public static ExampleElevator exampleElevator = new ExampleElevator();
+  public static TelescopicArm telescopicArm = new TelescopicArm();
 
   Command autoCommand = null;
 

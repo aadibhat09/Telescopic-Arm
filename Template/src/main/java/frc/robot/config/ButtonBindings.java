@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.RobotConfig.ControlMode;
 import frc.robot.config.RobotConfig.INPUT;
 import frc.robot.config.RobotConfig.RobotType;
+import frc.robot.config.TelescopicArmConfig.TelescopicArmStates;
 import frc.robot.utils.MiscUtils;
 import frc.robot.Robot;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.commands.telescopicArm.GoToLevel;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -30,17 +32,15 @@ public final class ButtonBindings {
      * If both controllers are plugged in (pi and op)
      */
     public static void twoControllerBindings(CommandXboxController piCtl, CommandXboxController opCtl) {
-        // Add any dual-controller bindings here.
-        // Example:
-        Bind.button(piCtl.povUp()).onTrue(Commands.print("Pilot: povUp pressed"));
-        Bind.button(opCtl.a()).onTrue(Commands.print("Operator: A pressed"));
 
-        Bind.button(piCtl.start()).onTrue(Robot.swerve::resetGyro);
-        Bind.button(piCtl.back()).onTrue(Robot.swerve::syncEncoderPositions);
     }
 
     public static void oneControllerBindings(CommandXboxController ctl) {
-        // Add any pilot-only bindings here.
+
+        Bind.button(ctl.a()).onTrue(new GoToLevel(TelescopicArmStates.L1));
+        Bind.button(ctl.b()).onTrue(new GoToLevel(TelescopicArmStates.L2));
+        Bind.button(ctl.x()).onTrue(new GoToLevel(TelescopicArmStates.L3));
+
     }
 
     public static void simBindings() {

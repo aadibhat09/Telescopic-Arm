@@ -3,6 +3,8 @@ package frc.robot.subsystems.TelescopicArm;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,17 +13,17 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.config.TelescopicArmConfig;
 import frc.robot.config.RobotConfig;
 import frc.robot.config.RobotConfig.GENERAL;
-import frc.robot.subsystems.TelescopicArm.ElevatorDataAutoLogged;
 import frc.robot.subsystems.TelescopicArm.TelescopicArmIO;
 import frc.robot.utils.MiscUtils;
 
-/**
- * The reason this class is named weirdly is because "ElevatorSim" is already
- * taken by WPILib to give us the {@link ElevatorSim} utility class
- */
 public class TelescopicArmSim implements TelescopicArmIO {
+    double previousArmVelocity;
+    double previousElevatorVelocity;
+    double armVelocity;
+    double elevatorVelocity;
 
-    private final SingleJointedArmSim armSimSystem = new SingleJointedArmSim(DCMotor.getNEO(1),
+    private final SingleJointedArmSim armSimSystem = new SingleJointedArmSim(
+            DCMotor.getNEO(1),
             TelescopicArmConfig.ArmSpecs.GEARING,
             0.05,
             TelescopicArmConfig.ArmSpecs.ARM_LENGTH_M,
@@ -40,18 +42,13 @@ public class TelescopicArmSim implements TelescopicArmIO {
             true,
             TelescopicArmConfig.ElevatorSpecs.STARTING_HEIGHT_M);
 
-    /**
-     * This is our {@link ElevatorData} instance that we will update with data
-     * We have to use the "AutoLogged" variation because of the @AutoLog annotation,
-     * which will create a new class for the data object
-     */
     private TelescopicArmDataAutoLogged data;
 
-    static double prevUpdateS = 0;
+    // static double prevUpdateS = 0;
 
-    public TelescopicArmSim(TelescopicArmDataAutoLogged telescopicData) {
+    public TelescopicArmSim(TelescopicArmDataAutoLogged telescopicArmData) {
 
-        data = telescopicData;
+        data = telescopicArmData;
     }
 
     @Override
@@ -59,8 +56,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
 
         double clampedVolts = MiscUtils.voltageClamp(volts);
 
-        data.leftAppliedVolts = clampedVolts;
-        data.rightAppliedVolts = clampedVolts;
+        data.elevator_appliedVolts = clampedVolts;
 
         elevatorSimSystem.setInputVoltage(clampedVolts);
     }
@@ -70,7 +66,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
 
         double clampedVolts = MiscUtils.voltageClamp(volts);
 
-        data.appliedVolts = clampedVolts;
+        data.arm_appliedVolts = clampedVolts;
 
         armSimSystem.setInputVoltage(clampedVolts);
     }
@@ -83,18 +79,32 @@ public class TelescopicArmSim implements TelescopicArmIO {
 
     @Override
     public void updateData() {
-        elevatorSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
+
+        // ARM
         armSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
 
-        data.position = new Translation2d(0, elevatorSimSystem.getPositionMeters() +
-                TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET.getY());
-        data.velocityMPS = elevatorSimSystem.getVelocityMetersPerSecond();
+        previousArmVelocity = armVelocity;
+        armVelocity = armSimSystem.getVelocityRadPerSec();
+        
+        data.arm_angle = armSimSystem.getAngleRads();
+        data.arm_angularVelocityRadPS = armVelocity;
+        data.arm_angularAccelRadPSS = (armVelocity - previousArmVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
+        // data.arm_appliedVolts = armSimSystem.;
+        data.arm_currentAmps = armSimSystem.getCurrentDrawAmps();
 
-        // The following data is not useful in simulation:
-        data.leftCurrentAmps = elevatorSimSystem.getCurrentDrawAmps();
-        data.rightCurrentAmps = elevatorSimSystem.getCurrentDrawAmps();
-        // this *could* be calculated by using ((currentVelocity -
-        // prevVelocity)/deltaTimeS), but once again, not worth it for sim
-        data.accelMPSS = 0;
+
+        // ELEVATOR
+        elevatorSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
+
+        previousElevatorVelocity = elevatorVelocity;
+        elevatorVelocity = armSimSystem.getVelocityRadPerSec();
+
+        data.elevator_position = new Translation2d(0, elevatorSimSystem.getPositionMeters() + TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET.getY());
+        data.elevator_velocityMPS = elevatorVelocity;
+        data.elevator_accelMPSS = (elevatorVelocity - previousElevatorVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
+        data.elevator_currentAmps = elevatorSimSystem.getCurrentDrawAmps();
+        // data.elevator_appliedVolts = ;
+
+
     }
 }

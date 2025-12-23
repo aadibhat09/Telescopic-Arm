@@ -34,6 +34,7 @@ public class TelescopicArmConfig {
         public static final double MIN_HEIGHT_M = 0;
         public static final double MAX_HEIGHT_M = Units.feetToMeters(6);
         public static final double STARTING_HEIGHT_M = 0;
+        public static final double BASE_HEIGHT = Units.inchesToMeters(6);
 
         public static boolean IS_INVERTED = false;
 
@@ -132,14 +133,15 @@ public class TelescopicArmConfig {
     }
 
     public enum TelescopicArmStates {
-        L1(Units.inchesToMeters(1.0), Units.inchesToMeters(12.0));
-        L2(Units.inchesToMeters(1.0), Units.inchesToMeters(15.35));
+        STOP(0, 0),
+        L1(Units.inchesToMeters(1.0), Units.inchesToMeters(12.0)),
+        L2(Units.inchesToMeters(1.0), Units.inchesToMeters(15.35)),
         L3(Units.inchesToMeters(1.0), .742);
-
+        
         public Translation2d position;
 
         private TelescopicArmStates(double x, double y) {
-            this.position = (new Translation2d(0, heightM)).minus(ElevatorSpecs.MOUNT_OFFSET);
+            this.position = (new Translation2d(x, y)).minus(ElevatorSpecs.MOUNT_OFFSET);
         }
     }
 }
