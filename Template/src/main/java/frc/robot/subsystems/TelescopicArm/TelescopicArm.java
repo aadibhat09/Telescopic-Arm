@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.config.ExampleElevatorConfig.ElevatorStates;
 import frc.robot.config.TelescopicArmConfig.ArmControl;
@@ -97,19 +98,12 @@ public class TelescopicArm extends SubsystemBase {
         double ffArmVoltage = armFeedforward.calculateWithVelocities(getArmAngle(), firstArmState.velocity,
                 nextArmState.velocity);
 
-        State firstElevatorstate = armProfile.getSetpoint();
-        double elevatorPID = armProfile.calculate(getHeight());
+        State firstElevatorstate = elevatorProfile.getSetpoint();
+        double elevatorPID = elevatorProfile.calculate(getHeight());
 
-        State nextElevatorState = armProfile.getSetpoint();
-        double ffElevatorVoltage = elevatorFeedforward.calculateWithVelocities(firstArmState.velocity,
-                nextArmState.velocity);
-        // System.out.println("FF " + ffVoltage);
-        // System.out.println("PID " + PID);
-
-        // PID = 0;
-        // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
-        // Logger.recordOutput("Elevator/positionSetpoint", firstState.position);
-        // Logger.recordOutput("Elevator/velocitySetpoint", firstState.velocity);
+        State nextElevatorState = elevatorProfile.getSetpoint();
+        double ffElevatorVoltage = elevatorFeedforward.calculateWithVelocities(firstElevatorstate.velocity,
+                nextElevatorState.velocity);
 
         io.setArmVoltage(armPID + ffArmVoltage);
         io.setElevatorVoltage(elevatorPID + ffElevatorVoltage);
@@ -123,6 +117,9 @@ public class TelescopicArm extends SubsystemBase {
         double setPointAngle = Math.atan2(y, x);
         double setPointDistance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
+        SmartDashboard.putNumber("SETPOINT DISTANCE", setPointDistance);
+        SmartDashboard.putNumber("SETPOINT ANGLE", Math.toDegrees(setPointAngle));
+
         setGoal(setPointDistance, setPointAngle);
     }
 
@@ -132,14 +129,23 @@ public class TelescopicArm extends SubsystemBase {
         return new Translation2d();
     }
 
-    public void updateMech() {
+    public void updateMechanism() {
         telescopingMech.setAngle(getArmAngle());
-        telescopingMech.setLength(getHeight()); // add base height
+        telescopingMech.setLength(getHeight());
+
+        Logger.recordOutput("Elevator/elevatorMechanism", mech);
+        // Logger.recordOutput("Arm/mechanism", mech2d);
     }
 
     @Override
     public void periodic() {
-        Logger.recordOutput("Elevator/elevatorMechanism", mech);
         io.updateData();
+        moveToGoal();
+
+        updateMechanism();
+        SmartDashboard.putNumber("ARM SETPOINT POSITION", armProfile.getSetpoint().position);
+        SmartDashboard.putNumber("ARM SETPOINT VELOCITY", armProfile.getSetpoint().velocity);
+        SmartDashboard.putNumber("ELEVATOR SETPOINT POSITION", elevatorProfile.getSetpoint().position);
+        SmartDashboard.putNumber("ELEVATOR SETPOINT VELOCITY", elevatorProfile.getSetpoint().velocity);
     }
 }
