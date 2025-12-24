@@ -5,16 +5,13 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.config.ExampleElevatorConfig.ElevatorStates;
 import frc.robot.config.TelescopicArmConfig.ArmControl;
 import frc.robot.config.TelescopicArmConfig.ElevatorControl;
 import frc.robot.config.TelescopicArmConfig.ElevatorSpecs;
@@ -52,7 +49,7 @@ public class TelescopicArm extends SubsystemBase {
     }
 
     public double getArmAngle() {
-        return data.arm_angle;
+        return data.arm_angle.getRadians();
     }
 
     public double getHeight() {
@@ -67,17 +64,6 @@ public class TelescopicArm extends SubsystemBase {
             return;
         }
         goToTranslation(state.position);
-    }
-
-    private void runState() {
-        switch (state) {
-            case STOP:
-                stop();
-                break;
-            default:
-                moveToGoal();
-                break;
-        }
     }
 
     public void stop() {
@@ -133,8 +119,7 @@ public class TelescopicArm extends SubsystemBase {
         telescopingMech.setAngle(getArmAngle());
         telescopingMech.setLength(getHeight());
 
-        Logger.recordOutput("Elevator/elevatorMechanism", mech);
-        // Logger.recordOutput("Arm/mechanism", mech2d);
+        Logger.recordOutput("Telescopic/telescopicMechanism", mech);
     }
 
     @Override
@@ -143,9 +128,7 @@ public class TelescopicArm extends SubsystemBase {
         moveToGoal();
 
         updateMechanism();
-        SmartDashboard.putNumber("ARM SETPOINT POSITION", armProfile.getSetpoint().position);
-        SmartDashboard.putNumber("ARM SETPOINT VELOCITY", armProfile.getSetpoint().velocity);
-        SmartDashboard.putNumber("ELEVATOR SETPOINT POSITION", elevatorProfile.getSetpoint().position);
-        SmartDashboard.putNumber("ELEVATOR SETPOINT VELOCITY", elevatorProfile.getSetpoint().velocity);
+        SmartDashboard.putNumber("ARM ANGLE" , data.arm_angle.getDegrees());
+        SmartDashboard.putNumber("ELEVATOR VOLTAGE" , data.elevator_appliedVolts);
     }
 }

@@ -2,18 +2,13 @@ package frc.robot.subsystems.TelescopicArm;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.config.TelescopicArmConfig;
 import frc.robot.config.RobotConfig;
-import frc.robot.config.RobotConfig.GENERAL;
-import frc.robot.subsystems.TelescopicArm.TelescopicArmIO;
 import frc.robot.utils.MiscUtils;
 
 public class TelescopicArmSim implements TelescopicArmIO {
@@ -33,7 +28,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
             TelescopicArmConfig.ArmSpecs.START_ANGLE.getRadians());
             
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
-            DCMotor.getNEO(2),
+            DCMotor.getNEO(1),
             TelescopicArmConfig.ElevatorSpecs.GEARING,
             TelescopicArmConfig.ElevatorSpecs.CARRIAGE_MASS_KG,
             TelescopicArmConfig.ElevatorSpecs.DRUM_RADIUS_M,
@@ -86,7 +81,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
         previousArmVelocity = armVelocity;
         armVelocity = armSimSystem.getVelocityRadPerSec();
         
-        data.arm_angle = armSimSystem.getAngleRads();
+        data.arm_angle = new Rotation2d(armSimSystem.getAngleRads());
         data.arm_angularVelocityRadPS = armVelocity;
         data.arm_angularAccelRadPSS = (armVelocity - previousArmVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
         // data.arm_appliedVolts = armSimSystem.;

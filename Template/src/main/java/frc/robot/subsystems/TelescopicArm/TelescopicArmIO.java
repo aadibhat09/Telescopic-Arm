@@ -11,7 +11,8 @@ public interface TelescopicArmIO {
     public class TelescopicArmData {
 
         // ARM DATA
-        public double arm_angle = 0;
+        // public double arm_angle = 0;
+        public Rotation2d arm_angle = TelescopicArmConfig.ArmSpecs.START_ANGLE;
         public double arm_angularVelocityRadPS = 0.0;
         public double arm_angularAccelRadPSS = 0.0;
         public double arm_appliedVolts = 0.0;
