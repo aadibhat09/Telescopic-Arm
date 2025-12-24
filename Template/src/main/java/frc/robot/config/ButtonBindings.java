@@ -32,14 +32,12 @@ public final class ButtonBindings {
      * If both controllers are plugged in (pi and op)
      */
     public static void twoControllerBindings(CommandXboxController piCtl, CommandXboxController opCtl) {
-
+        Bind.button(piCtl.a()).onTrue(new GoToLevel(TelescopicArmStates.L1));
+        Bind.button(piCtl.b()).onTrue(new GoToLevel(TelescopicArmStates.L2));
+        Bind.button(piCtl.x()).onTrue(new GoToLevel(TelescopicArmStates.L3));
     }
 
     public static void oneControllerBindings(CommandXboxController ctl) {
-
-        Bind.button(ctl.a()).onTrue(new GoToLevel(TelescopicArmStates.L1));
-        Bind.button(ctl.b()).onTrue(new GoToLevel(TelescopicArmStates.L2));
-        Bind.button(ctl.x()).onTrue(new GoToLevel(TelescopicArmStates.L3));
 
     }
 
