@@ -36,6 +36,6 @@ public interface TelescopicArmIO {
     public default void setMotorIdleMode(IdleMode idleMode) {
     };
 
-    public default void updateData() {
+    public default void updateData(TelescopicArmDataAutoLogged telescopicArmData) {
     };
 }

@@ -41,9 +41,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
 
     // static double prevUpdateS = 0;
 
-    public TelescopicArmSim(TelescopicArmDataAutoLogged telescopicArmData) {
-
-        data = telescopicArmData;
+    public TelescopicArmSim() {
     }
 
     @Override
@@ -62,7 +60,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
         double clampedVolts = MiscUtils.voltageClamp(volts);
 
         data.arm_appliedVolts = clampedVolts;
-
+        System.out.println("[ArmSim] setArmVoltage called with " + clampedVolts + " volts.");
         armSimSystem.setInputVoltage(clampedVolts);
     }
 
@@ -73,14 +71,15 @@ public class TelescopicArmSim implements TelescopicArmIO {
     }
 
     @Override
-    public void updateData() {
+    public void updateData(TelescopicArmDataAutoLogged telescopicArmData) {
+        data = telescopicArmData;
 
         // ARM
         armSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
 
         previousArmVelocity = armVelocity;
         armVelocity = armSimSystem.getVelocityRadPerSec();
-        
+        System.out.println("Arm Angle Rads: " + armSimSystem.getAngleRads());
         data.arm_angle = new Rotation2d(armSimSystem.getAngleRads());
         data.arm_angularVelocityRadPS = armVelocity;
         data.arm_angularAccelRadPSS = (armVelocity - previousArmVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
@@ -92,14 +91,12 @@ public class TelescopicArmSim implements TelescopicArmIO {
         elevatorSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
 
         previousElevatorVelocity = elevatorVelocity;
-        elevatorVelocity = armSimSystem.getVelocityRadPerSec();
+        elevatorVelocity = elevatorSimSystem.getVelocityMetersPerSecond();
 
         data.elevator_position = new Translation2d(0, elevatorSimSystem.getPositionMeters() + TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET.getY());
         data.elevator_velocityMPS = elevatorVelocity;
         data.elevator_accelMPSS = (elevatorVelocity - previousElevatorVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
         data.elevator_currentAmps = elevatorSimSystem.getCurrentDrawAmps();
         // data.elevator_appliedVolts = ;
-
-
     }
 }
