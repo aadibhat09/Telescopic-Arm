@@ -45,7 +45,7 @@ public class TelescopicArm extends SubsystemBase {
     TelescopicArmStates state;
 
     public TelescopicArm() {
-        io = new TelescopicArmSim(data);
+        io = new TelescopicArmSim();
     }
 
     public double getArmAngle() {
@@ -90,7 +90,9 @@ public class TelescopicArm extends SubsystemBase {
         State nextElevatorState = elevatorProfile.getSetpoint();
         double ffElevatorVoltage = elevatorFeedforward.calculateWithVelocities(firstElevatorstate.velocity,
                 nextElevatorState.velocity);
-
+                
+        System.out.println(firstArmState.position);
+        System.out.println(data.arm_angle.getRadians());
         io.setArmVoltage(armPID + ffArmVoltage);
         io.setElevatorVoltage(elevatorPID + ffElevatorVoltage);
     }
@@ -124,9 +126,9 @@ public class TelescopicArm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.updateData();
+        io.updateData(data);
+        Logger.processInputs("TelescopicArm", data);
         moveToGoal();
-
         updateMechanism();
         SmartDashboard.putNumber("ARM ANGLE" , data.arm_angle.getDegrees());
         SmartDashboard.putNumber("ELEVATOR VOLTAGE" , data.elevator_appliedVolts);
