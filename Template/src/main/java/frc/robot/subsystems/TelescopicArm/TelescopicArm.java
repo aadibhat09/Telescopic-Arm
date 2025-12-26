@@ -23,7 +23,6 @@ public class TelescopicArm extends SubsystemBase {
     TelescopicArmIO io;
     TelescopicArmDataAutoLogged data = new TelescopicArmDataAutoLogged();
 
-    // elevator and arm config seperate
     ArmControl.ControlConfig armConfig = ArmControl.CONTROL_CONFIG;
     ElevatorControl.ControlConfig elevatorConfig = ElevatorControl.CONTROL_CONFIG;
 
@@ -111,12 +110,6 @@ public class TelescopicArm extends SubsystemBase {
         SmartDashboard.putNumber("SETPOINT ANGLE", Math.toDegrees(setPointAngle));
 
         setGoal(setPointDistance, setPointAngle);
-    }
-
-    public Translation2d getTranslation() {
-
-        // CHANGE THIS
-        return new Translation2d();
     }
 
     public void updateMechanism() {

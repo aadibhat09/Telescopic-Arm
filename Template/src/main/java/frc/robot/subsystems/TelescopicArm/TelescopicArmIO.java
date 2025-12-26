@@ -18,7 +18,6 @@ public interface TelescopicArmIO {
         public double arm_appliedVolts = 0.0;
         public double arm_currentAmps = 0.0;
 
-
         // ELEVATOR DATA
         public Translation2d elevator_position = TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET;
         public double elevator_velocityMPS = 0;

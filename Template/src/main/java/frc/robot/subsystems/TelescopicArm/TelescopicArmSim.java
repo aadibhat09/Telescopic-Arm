@@ -26,7 +26,7 @@ public class TelescopicArmSim implements TelescopicArmIO {
             TelescopicArmConfig.ArmSpecs.MAX_ANGLE.getRadians(),
             TelescopicArmConfig.ArmSpecs.SIMULATE_GRAVITY,
             TelescopicArmConfig.ArmSpecs.START_ANGLE.getRadians());
-            
+
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
             DCMotor.getNEO(1),
             TelescopicArmConfig.ElevatorSpecs.GEARING,
@@ -38,8 +38,6 @@ public class TelescopicArmSim implements TelescopicArmIO {
             TelescopicArmConfig.ElevatorSpecs.STARTING_HEIGHT_M);
 
     private TelescopicArmDataAutoLogged data;
-
-    // static double prevUpdateS = 0;
 
     public TelescopicArmSim() {
     }
@@ -86,17 +84,17 @@ public class TelescopicArmSim implements TelescopicArmIO {
         // data.arm_appliedVolts = armSimSystem.;
         data.arm_currentAmps = armSimSystem.getCurrentDrawAmps();
 
-
         // ELEVATOR
         elevatorSimSystem.update(RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S);
 
         previousElevatorVelocity = elevatorVelocity;
         elevatorVelocity = elevatorSimSystem.getVelocityMetersPerSecond();
 
-        data.elevator_position = new Translation2d(0, elevatorSimSystem.getPositionMeters() + TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET.getY());
+        data.elevator_position = new Translation2d(0,
+                elevatorSimSystem.getPositionMeters() + TelescopicArmConfig.ElevatorSpecs.MOUNT_OFFSET.getY());
         data.elevator_velocityMPS = elevatorVelocity;
-        data.elevator_accelMPSS = (elevatorVelocity - previousElevatorVelocity) / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
+        data.elevator_accelMPSS = (elevatorVelocity - previousElevatorVelocity)
+                / RobotConfig.GENERAL.NOMINAL_LOOP_TIME_S;
         data.elevator_currentAmps = elevatorSimSystem.getCurrentDrawAmps();
-        // data.elevator_appliedVolts = ;
     }
 }
