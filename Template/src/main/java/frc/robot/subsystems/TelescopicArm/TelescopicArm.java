@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.config.TelescopicArmConfig;
@@ -111,7 +112,7 @@ public class TelescopicArm extends SubsystemBase {
     }
 
     public void updateMechanism() {
-        telescopingMech.setAngle(getArmAngle());
+        telescopingMech.setAngle(Units.radiansToDegrees(getArmAngle()));
         telescopingMech.setLength(getHeight());
 
         Logger.recordOutput("Telescopic/telescopicMechanism", mech);
@@ -123,7 +124,7 @@ public class TelescopicArm extends SubsystemBase {
         Logger.processInputs("TelescopicArm", data);
         moveToGoal();
         updateMechanism();
-        SmartDashboard.putNumber("ARM ANGLE", data.arm_angle.getDegrees());
-        SmartDashboard.putNumber("ELEVATOR HEIGHT", data.elevator_position.getY());
+        SmartDashboard.putNumber("ARM ANGLE", Units.radiansToDegrees(getArmAngle()));
+        SmartDashboard.putNumber("ELEVATOR HEIGHT", getHeight());
     }
 }
