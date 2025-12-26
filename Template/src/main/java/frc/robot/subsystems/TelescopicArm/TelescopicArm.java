@@ -92,8 +92,6 @@ public class TelescopicArm extends SubsystemBase {
         double ffElevatorVoltage = elevatorFeedforward.calculateWithVelocities(firstElevatorstate.velocity,
                 nextElevatorState.velocity);
 
-        System.out.println(firstArmState.position);
-        System.out.println(data.arm_angle.getRadians());
         io.setArmVoltage(armPID + ffArmVoltage);
         io.setElevatorVoltage(elevatorPID + ffElevatorVoltage);
     }
@@ -126,6 +124,6 @@ public class TelescopicArm extends SubsystemBase {
         moveToGoal();
         updateMechanism();
         SmartDashboard.putNumber("ARM ANGLE", data.arm_angle.getDegrees());
-        SmartDashboard.putNumber("ELEVATOR VOLTAGE", data.elevator_appliedVolts);
+        SmartDashboard.putNumber("ELEVATOR HEIGHT", data.elevator_position.getY());
     }
 }
