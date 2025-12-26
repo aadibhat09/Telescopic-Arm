@@ -131,9 +131,9 @@ public class TelescopicArmConfig {
 
     public enum TelescopicArmStates {
         STOP(0, 0),
-        L1(Units.inchesToMeters(1.0), Units.inchesToMeters(12.0)),
-        L2(Units.inchesToMeters(1.0), Units.inchesToMeters(15.35)),
-        L3(Units.inchesToMeters(1.0), .742);
+        L1(Units.inchesToMeters(12.0), Units.inchesToMeters(12.0)),
+        L2(Units.inchesToMeters(12.0), Units.inchesToMeters(15.35)),
+        L3(Units.inchesToMeters(12.0), .742);
 
         public Translation2d position;
 

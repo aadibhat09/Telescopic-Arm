@@ -35,6 +35,7 @@ public final class ButtonBindings {
         Bind.button(piCtl.a()).onTrue(new GoToLevel(TelescopicArmStates.L1));
         Bind.button(piCtl.b()).onTrue(new GoToLevel(TelescopicArmStates.L2));
         Bind.button(piCtl.x()).onTrue(new GoToLevel(TelescopicArmStates.L3));
+        Bind.button(piCtl.y()).onTrue(new GoToLevel(TelescopicArmStates.STOP));
     }
 
     public static void oneControllerBindings(CommandXboxController ctl) {
