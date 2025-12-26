@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.config.TelescopicArmConfig;
 import frc.robot.config.TelescopicArmConfig.ArmControl;
 import frc.robot.config.TelescopicArmConfig.ElevatorControl;
 import frc.robot.config.TelescopicArmConfig.ElevatorSpecs;
@@ -46,6 +47,8 @@ public class TelescopicArm extends SubsystemBase {
 
     public TelescopicArm() {
         io = new TelescopicArmSim();
+        armProfile.reset(TelescopicArmConfig.ArmSpecs.START_ANGLE.getRadians());
+        elevatorProfile.reset(TelescopicArmConfig.ElevatorSpecs.STARTING_HEIGHT_M);
     }
 
     public double getArmAngle() {
@@ -58,8 +61,7 @@ public class TelescopicArm extends SubsystemBase {
 
     public void setState(TelescopicArmStates state) {
         this.state = state;
-        if(state==TelescopicArmStates.STOP)
-        {
+        if (state == TelescopicArmStates.STOP) {
             stop();
             return;
         }
@@ -90,7 +92,7 @@ public class TelescopicArm extends SubsystemBase {
         State nextElevatorState = elevatorProfile.getSetpoint();
         double ffElevatorVoltage = elevatorFeedforward.calculateWithVelocities(firstElevatorstate.velocity,
                 nextElevatorState.velocity);
-                
+
         System.out.println(firstArmState.position);
         System.out.println(data.arm_angle.getRadians());
         io.setArmVoltage(armPID + ffArmVoltage);
@@ -130,7 +132,7 @@ public class TelescopicArm extends SubsystemBase {
         Logger.processInputs("TelescopicArm", data);
         moveToGoal();
         updateMechanism();
-        SmartDashboard.putNumber("ARM ANGLE" , data.arm_angle.getDegrees());
-        SmartDashboard.putNumber("ELEVATOR VOLTAGE" , data.elevator_appliedVolts);
+        SmartDashboard.putNumber("ARM ANGLE", data.arm_angle.getDegrees());
+        SmartDashboard.putNumber("ELEVATOR VOLTAGE", data.elevator_appliedVolts);
     }
 }

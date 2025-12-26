@@ -10,7 +10,7 @@ public class TelescopicArmConfig {
     public static class ArmSpecs {
         // this gearing is how many ARM ROTATIONS per MOTOR ROTATION
         // here, we have a 12 tooth sprocket on the motor, driving a 64 tooth sprocket on the arm
-        public static final double GEARING = 12.0 / 64.0;
+        public static final double GEARING = 45;
         public static final double END_EFFECTOR_MASS_KG = Units.lbsToKilograms(15);
         public static final double ARM_LENGTH_M = Units.inchesToMeters(14);
 
@@ -20,7 +20,7 @@ public class TelescopicArmConfig {
         public static final Rotation2d START_ANGLE = Rotation2d.fromDegrees(90);
 
         public static final boolean SIMULATE_GRAVITY = true;
-        public static boolean IS_INVERTED = false;
+        // public static boolean IS_INVERTED = false;
     }
 
     public static class ElevatorSpecs {
